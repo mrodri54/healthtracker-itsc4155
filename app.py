@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, create_initial_user
+from models import db, User, create_initial_user, HealthData, create_initial_health_data
 import time
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -20,6 +20,7 @@ db.init_app(app)  # Initialize db with the app
 # Create tables and an initial user in the database
 with app.app_context():
     db.create_all()  # Create all tables
+    create_initial_health_data()
     # create_initial_user() 
 
 @app.route('/')
