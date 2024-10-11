@@ -7,10 +7,54 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 
-<p>Welcome to the landing page</p>
+<!-- <p>Welcome to the landing page</p> -->
 
-<button onclick="window.location.href='/userlogin'" class="btn btn-primary">Login</button>
+<!-- <button onclick="window.location.href='/userlogin'" class="btn btn-primary">Login</button> -->
 
+
+<div class="content my-4">
+    <p>Welcome to the landing page</p>
+
+    <button onclick="window.location.href='/userlogin'" class="btn btn-primary mb-4">Login</button>
+
+    <section id="calorie-tracker" class="tracker-section">
+        <h2>Calorie Tracker</h2>
+        <div class="form-group">
+            <label for="calories">Enter Calories:</label>
+            <input type="number" id="calories" class="form-control" placeholder="e.g. 500">
+        </div>
+        <button onclick="addCalories()" class="btn btn-success">Add Calories</button>
+        <p class="mt-2">Total Calories: <span id="total-calories" class="font-weight-bold">0</span></p>
+    </section>
+
+    <section id="fitness-tracker" class="tracker-section">
+        <h2>Fitness Tracker</h2>
+        <div class="form-group">
+            <label for="workout">Workout Type:</label>
+            <select id="workout" class="form-control">
+                <option value="Cardio">Cardio</option>
+                <option value="Strength">Strength</option>
+                <option value="Flexibility">Flexibility</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="duration">Duration (minutes):</label>
+            <input type="number" id="duration" class="form-control" placeholder="e.g. 30">
+        </div>
+        <button onclick="addWorkout()" class="btn btn-success">Add Workout</button>
+        
+        <h3 class="mt-4">Workout Log</h3>
+        <ul id="workout-log" class="list-group mt-2"></ul>
+    </section>
+    <section id="resource-hub" class="tracker-section">
+        <h2>Resource Hub</h2>
+        <ul class="list-group">
+            <li class="list-group-item"><a href="https://www.healthline.com/nutrition" target="_blank">Nutrition Articles</a></li>
+            <li class="list-group-item"><a href="https://www.fitness.com/" target="_blank">Fitness Articles</a></li>
+            <li class="list-group-item"><a href="https://www.cdc.gov/healthyweight/index.html" target="_blank">CDC Healthy Weight</a></li>
+        </ul>
+    </section>
+</div>
 
 
 
