@@ -10,7 +10,7 @@ app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Interstellar101_@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)
@@ -49,6 +49,26 @@ def login():
             flash('Invalid username or password', 'error') 
             # return redirect(url_for('userlogin'))
     return render_template('login.html')
+
+@app.route('/habit')
+def habit_tracking():
+    return render_template('habit.html')
+
+@app.route('/nutrition')
+def nutrition_tracking():
+    return render_template('nutrition.html')
+
+@app.route('/fitnesstracking')
+def fitness_tracking():
+    return render_template('fitnesstracking.html')
+
+@app.route('/fitnessguide')
+def fitness_guide():
+    return render_template('fitnessguide.html')
+
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

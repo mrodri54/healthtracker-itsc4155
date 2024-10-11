@@ -3,14 +3,7 @@
 {% block title %}49er Health Tracker{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-
-<!-- <p>Welcome to the landing page</p> -->
-
-<!-- <button onclick="window.location.href='/userlogin'" class="btn btn-primary">Login</button> -->
-
 
 <div class="content my-4">
     <p>Welcome to the landing page</p>
@@ -42,10 +35,11 @@
             <input type="number" id="duration" class="form-control" placeholder="e.g. 30">
         </div>
         <button onclick="addWorkout()" class="btn btn-success">Add Workout</button>
-        
+
         <h3 class="mt-4">Workout Log</h3>
         <ul id="workout-log" class="list-group mt-2"></ul>
     </section>
+    
     <section id="resource-hub" class="tracker-section">
         <h2>Resource Hub</h2>
         <ul class="list-group">
@@ -55,7 +49,5 @@
         </ul>
     </section>
 </div>
-
-
 
 {% endblock %}

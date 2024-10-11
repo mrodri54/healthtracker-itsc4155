@@ -55,3 +55,8 @@ body {
     margin-bottom: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+.logo {
+    height: 50px; /* Adjust the height as needed */
+    margin-right: 20px;
+}
