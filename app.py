@@ -10,7 +10,7 @@ app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Interstellar101_@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)

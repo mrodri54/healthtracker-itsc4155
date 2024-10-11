@@ -6,5 +6,37 @@
 <div class="content my-4">
     <h2>Habit Tracking</h2>
     <p>Track your habits here.</p>
+
+    <section id="water-tracker" class="tracker-section">
+        <h3>Water Intake Tracker</h3>
+        <div class="form-group">
+            <label for="water-amount">Enter water intake (in liters):</label>
+            <input type="number" id="water-amount" class="form-control" placeholder="e.g. 2">
+        </div>
+        <button id="add-water-btn" class="btn btn-primary">Add Water</button>
+        <p class="mt-2">Total Water Intake: <span id="total-water" class="font-weight-bold">0</span> liters</p>
+    </section>
+    
+    <section id="sleep-tracker" class="tracker-section">
+        <h3>Sleep Tracker</h3>
+        <div class="form-group">
+            <label for="sleep-hours">Enter hours of sleep:</label>
+            <input type="number" id="sleep-hours" class="form-control" placeholder="e.g. 8">
+        </div>
+        <button id="add-sleep-btn" class="btn btn-primary">Add Sleep</button>
+        <p class="mt-2">Total Sleep: <span id="total-sleep" class="font-weight-bold">0</span> hours</p>
+    </section>
+    
+    <section id="habit-tracker" class="tracker-section">
+        <h3>Daily Habits</h3>
+        <div class="form-group">
+            <label for="habit-input">Enter a habit:</label>
+            <input type="text" id="habit-input" class="form-control" placeholder="e.g. Reading">
+        </div>
+        <button id="add-habit-btn" class="btn btn-success">Add Habit</button>
+        <ul id="habit-list" class="list-group mt-2"></ul>
+    </section>
 </div>
+
+
 {% endblock %}
