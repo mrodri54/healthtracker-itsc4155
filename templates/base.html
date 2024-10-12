@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}49er Health Tracker{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo" style="height: 50px;">
+            </a>
             <div class="nav-links">
-                <a class="nav-item" href="#habit-tracking">Habit Tracking</a>
-                <a class="nav-item" href="#nutrition-tracking">Nutrition Tracking</a>
-                <a class="nav-item" href="#fitness-tracking">Fitness Tracking</a>
-                <a class="nav-item" href="#fitness-guide">Fitness Guide</a>
+                <a class="nav-item" href="{{ url_for('habit_tracking') }}">Habit Tracking</a>
+                <a class="nav-item" href="{{ url_for('nutrition_tracking') }}">Nutrition Tracking</a>
+                <a class="nav-item" href="{{ url_for('fitness_tracking') }}">Fitness Tracking</a>
+                <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
             </div>
         </div>
     </nav>

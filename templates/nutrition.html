@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Nutrition Tracking{% endblock %}
+
+{% block content %}
+<div class="content my-4">
+    <h2>Nutrition Tracking</h2>
+    <p>Track your nutrition here.</p>
+
+    <section id="food-tracker" class="tracker-section">
+        <h3>Food Intake Tracker</h3>
+        <div class="form-group">
+            <label for="food-type">Select food type:</label>
+            <select id="food-type" class="form-control">
+                <option value="Apple" data-calories="52">Apple (52 kcal)</option>
+                <option value="Banana" data-calories="89">Banana (89 kcal)</option>
+                <option value="Chicken Breast" data-calories="165">Chicken Breast (165 kcal)</option>
+                <option value="Rice" data-calories="130">Rice (130 kcal)</option>
+                <option value="Salad" data-calories="15">Salad (15 kcal)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="food-quantity">Quantity (servings):</label>
+            <input type="number" id="food-quantity" class="form-control" placeholder="e.g. 1">
+        </div>
+        <button id="add-food-btn" class="btn btn-primary">Add Food</button>
+        <p class="mt-2">Total Calories: <span id="total-food-calories" class="font-weight-bold">0</span> kcal</p>
+        <ul id="food-log" class="list-group mt-2"></ul>
+    </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Fitness Tracking{% endblock %}
+
+{% block content %}
+<div class="content my-4">
+    <h2>Fitness Tracking</h2>
+    <p>Track your workouts here.</p>
+   
+    <section id="workout-tracker" class="tracker-section"></section>
+        <h3>Workout Tracker</h3>
+        <div class="form-group">
+            <label for="workout-type">Select workout type:</label>
+            <select id="workout-type" class="form-control">
+                <option value="Cardio" data-calories="10">Cardio</option>
+                <option value="Strength" data-calories="8">Strength</option>
+                <option value="Flexibility" data-calories="5">Flexibility</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="workout-duration">Duration (minutes):</label>
+            <input type="number" id="workout-duration" class="form-control" placeholder="e.g. 30">
+        </div>
+        <button id="add-workout-btn" class="btn btn-primary">Add Workout</button>
+        <p class="mt-2">Total Calories Burned: <span id="total-calories-burned" class="font-weight-bold">0</span> kcal</p>
+        <ul id="workout-log" class="list-group mt-2"></ul>
+    </section>
+    
+</div>
+{% endblock %}

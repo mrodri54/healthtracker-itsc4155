@@ -24,7 +24,7 @@ def create_initial_user():
 class HealthData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date = db.Column(db.DateTime, default=datetime)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
     weight = db.Column(db.Float, nullable=False)  # Weight
     steps = db.Column(db.Integer, nullable=True)  # Steps walked
     calories_burned = db.Column(db.Integer, nullable=True)  # Calories burned
