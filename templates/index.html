@@ -17,6 +17,33 @@
 
     <button onclick="window.location.href='/userlogin'" class="btn btn-primary mb-4">Login</button>
 
+    <!-- Health Data Table -->
+    <h2>Your Health Data</h2>
+    {% if health_data_list %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th>Steps</th>
+                    <th>Calories Burned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in health_data_list %}
+                <tr>
+                    <td>{{ data.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ data.weight }}</td>
+                    <td>{{ data.steps }}</td>
+                    <td>{{ data.calories_burned }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No health data available.</p>
+    {% endif %}
+
     <section id="calorie-tracker" class="tracker-section">
         <h2>Calorie Tracker</h2>
         <div class="form-group">

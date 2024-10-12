@@ -20,12 +20,21 @@ db.init_app(app)  # Initialize db with the app
 # Create tables and an initial user in the database
 with app.app_context():
     db.create_all()  # Create all tables
+    create_initial_user() 
     create_initial_health_data()
-    # create_initial_user() 
+
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    # Query all health data for the user with id=1
+    user = User.query.get(1)  # Fetch the test user with id=1
+    
+    if user:
+        health_data_list = user.health_data  # Get all health data associated with the user
+    else:
+        health_data_list = []  # If no user or no data, send an empty list
+
+    return render_template('index.html', health_data_list=health_data_list)
 
 @app.route('/userlogin')
 def userlogin():
