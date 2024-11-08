@@ -2,3 +2,4 @@ flask
 sqlalchemy
 pymysql
 flask-sqlalchemy
+flask-login
