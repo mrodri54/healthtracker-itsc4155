@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a href="{{ url_for('index') }}">
+            <a href="{{ url_for('home') }}">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo" style="height: 50px;">
             </a>
             <div class="nav-links">
@@ -20,6 +20,15 @@
                 <a class="nav-item" href="{{ url_for('nutrition_tracking') }}">Nutrition Tracking</a>
                 <a class="nav-item" href="{{ url_for('fitness_tracking') }}">Fitness Tracking</a>
                 <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
+                {% if current_user.is_authenticated %}
+                    <!-- <li class="nav-item"> -->
+                        <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
+                    <!-- </li> -->
+                {% else %}
+                    <!-- <li class="nav-item"> -->
+                        <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a>
+                    <!-- </li> -->
+                {% endif %}
             </div>
         </div>
     </nav>
