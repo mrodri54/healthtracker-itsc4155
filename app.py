@@ -106,6 +106,28 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('userlogin'))
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required  # Ensure the user is logged in
+def profile():
+    if request.method == 'POST':
+        # Get new username and password from the form
+        new_username = request.form.get('username')
+        new_password = request.form.get('password')
+
+        # Update the user's information in the database
+        if new_username:
+            current_user.username = new_username
+        
+        if new_password:
+            current_user.password = new_password  # You might want to hash the password in a real app
+
+        db.session.commit()  # Save changes to the database
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('profile'))  # Redirect to the profile page after update
+    
+    # Render the profile page and pass the current user info
+    return render_template('profile.html', user=current_user)
+
 @app.route('/habit')
 def habit_tracking():
     return render_template('habit.html')

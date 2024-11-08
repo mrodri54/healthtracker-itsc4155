@@ -23,6 +23,7 @@
                 {% if current_user.is_authenticated %}
                     <!-- <li class="nav-item"> -->
                         <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
+                        <a class="btn btn-info" href="{{ url_for('profile') }}">Profile</a>
                     <!-- </li> -->
                 {% else %}
                     <!-- <li class="nav-item"> -->

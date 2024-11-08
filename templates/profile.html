@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Habit Tracking{% endblock %}
+
+{% block content %}
+<h1>Your Profile</h1>
+<form method="POST">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Leave blank to keep current password">
+    </div>
+    <button type="submit">Update Profile</button>
+</form>
+
+<p><strong>Current Username:</strong> {{ user.username }}</p>
+
+<a href="{{ url_for('home') }}">Back to Home</a>
+{% endblock %}
