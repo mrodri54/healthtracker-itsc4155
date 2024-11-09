@@ -7,6 +7,20 @@
     <h2>Habit Tracking</h2>
     <p>Track your habits here.</p>
 
+    {% if sleep_graph and screen_time_graph %}
+        <div>
+            <h2>Sleep Log</h2>
+            <img src="data:image/png;base64,{{ sleep_graph }}" alt="Sleep Log Graph">
+        </div>
+
+        <div>
+            <h2>Screen Time Tracker</h2>
+            <img src="data:image/png;base64,{{ screen_time_graph }}" alt="Screen Time Graph">
+        </div>
+    {% else %}
+        <p>{{ msg }}</p>
+    {% endif %}
+
     <section id="water-tracker" class="tracker-section">
         <h3>Water Intake Tracker</h3>
         <div class="form-group">

@@ -6,6 +6,18 @@
 <div class="content my-4">
     <h2>Fitness Tracking</h2>
     <p>Track your workouts here.</p>
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% else %}
+        <!-- Step Tracker Graph -->
+        <h2>Step Tracker</h2>
+        <img src="data:image/png;base64,{{ steps_img_base64 }}" alt="Step Tracker Graph">
+        
+        <!-- Workout Performance Graph -->
+        <h2>Workout Performance</h2>
+        <img src="data:image/png;base64,{{ workouts_img_base64 }}" alt="Workout Performance Graph">
+    {% endif %}
    
     <section id="workout-tracker" class="tracker-section"></section>
         <h3>Workout Tracker</h3>
