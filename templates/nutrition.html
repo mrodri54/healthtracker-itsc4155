@@ -7,6 +7,15 @@
     <h2>Nutrition Tracking</h2>
     <p>Track your nutrition here.</p>
 
+    <h1>Nutrition Tracking</h1>
+    <h3>Calories Consumed Over Time</h3>
+    
+    {% if img_base64 %}
+        <img src="data:image/png;base64,{{ img_base64 }}" alt="Calories Chart">
+    {% else %}
+        <p>{{ message }}</p>
+    {% endif %}
+
     <section id="food-tracker" class="tracker-section">
         <h3>Food Intake Tracker</h3>
         <div class="form-group">

@@ -1,4 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+import matplotlib
+matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI plotting
+import matplotlib.pyplot as plt
+import io
+import base64
+from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, create_initial_user, HealthData, create_initial_health_data
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -132,9 +137,49 @@ def profile():
 def habit_tracking():
     return render_template('habit.html')
 
+# @app.route('/nutrition')
+# def nutrition_tracking():
+#     return render_template('nutrition.html')
+
 @app.route('/nutrition')
+@login_required  # Ensure the user is logged in
 def nutrition_tracking():
-    return render_template('nutrition.html')
+    # Get the current user from Flask-Login
+    user = current_user
+    
+    # Query the HealthData model to get the calories intake for this user
+    health_data = HealthData.query.filter_by(user_id=user.id).all()
+    
+    # Extract dates and calories data
+    dates = [data.date.strftime('%Y-%m-%d') for data in health_data]
+    calories = [data.calories_intake for data in health_data]
+
+    # If no data is found, return an empty plot
+    if not health_data:
+        return render_template('nutrition.html', img_base64=None, message="No data available for this user.")
+
+    # Create the bar plot
+    fig, ax = plt.subplots()
+    ax.bar(dates, calories, color='skyblue')
+
+    # Add labels and title
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Calories Consumed')
+    ax.set_title(f'Calories Intake for {user.username}')
+
+    # Rotate date labels for better readability
+    plt.xticks(rotation=45)
+
+    # Save the plot to a BytesIO object
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+
+    # Encode the image in base64 to display it in the HTML
+    img_base64 = base64.b64encode(img.getvalue()).decode('utf-8')
+
+    # Pass the base64 encoded image and any other necessary data to the template
+    return render_template('nutrition.html', img_base64=img_base64)
 
 @app.route('/fitnesstracking')
 def fitness_tracking():
@@ -149,4 +194,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, threaded=False)
