@@ -19,7 +19,10 @@
                     <th>Date</th>
                     <th>Weight</th>
                     <th>Steps</th>
-                    <th>Calories Burned</th>
+                    <th>Calorie Intake</th>
+                    <th>Workouts</th>
+                    <th>Sleep Hours</th>
+                    <th>Screen Time</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +31,10 @@
                     <td>{{ data.date.strftime('%Y-%m-%d') }}</td>
                     <td>{{ data.weight }}</td>
                     <td>{{ data.steps }}</td>
-                    <td>{{ data.calories_burned }}</td>
+                    <td>{{ data.calories_intake }}</td>
+                    <td>{{ data.workouts }}</td>
+                    <td>{{ data.sleep_hours }}</td>
+                    <td>{{ data.screen_time }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
