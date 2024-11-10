@@ -29,22 +29,22 @@
                         <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a>
                     <!-- </li> -->
                 {% endif %}
-                <div class="nav-links">
+                <!-- <div class="nav-links">
                 <a class="nav-item" href="{{ url_for('habit_tracking') }}">Habit Tracking</a>
                 <a class="nav-item" href="{{ url_for('nutrition_tracking') }}">Nutrition Tracking</a>
                 <a class="nav-item" href="{{ url_for('fitness_tracking') }}">Fitness Tracking</a>
-                <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
+                <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a> -->
                 {% if current_user.is_authenticated %}
                     <!-- <li class="nav-item"> -->
-                        <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
-                        <a class="btn btn-info" href="{{ url_for('profile') }}">Profile</a>
+                        <!-- <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
+                        <a class="btn btn-info" href="{{ url_for('profile') }}">Profile</a> -->
                     <!-- </li> -->
                 {% else %}
                     <!-- <li class="nav-item"> -->
-                        <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a>
+                        <!-- <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a> -->
                     <!-- </li> -->
                 {% endif %}
-                <button id="dark-mode-toggle" class="btn">Dark Mode</button>
+                <!-- <button id="dark-mode-toggle" class="btn">Dark Mode</button> -->
             </div>
             </div>
         </div>

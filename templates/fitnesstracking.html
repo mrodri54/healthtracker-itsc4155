@@ -3,7 +3,7 @@
 {% block title %}Fitness Tracking{% endblock %}
 
 {% block content %}
-<div class="content my-4">
+<div class="content my-4" style="text-align: center;">
     <h2>Fitness Tracking</h2>
     <p>Track your workouts here.</p>
 
@@ -15,48 +15,77 @@
         <img src="data:image/png;base64,{{ steps_img_base64 }}" alt="Step Tracker Graph">
         
         <!-- Workout Performance Graph -->
-        <h2>Workout Performance</h2>
-        <img src="data:image/png;base64,{{ workouts_img_base64 }}" alt="Workout Performance Graph">
+        <!-- <h2>Workout Performance</h2>
+        <img src="data:image/png;base64,{{ workouts_img_base64 }}" alt="Workout Performance Graph"> -->
     {% endif %}
-
-    <!-- Workout Tracker Form -->
-    <section id="workout-tracker" class="tracker-section">
-        <h3>Workout Tracker</h3>
-        <form id="workout-form">
-            <div class="form-group">
-                <label for="workout-type">Select workout type:</label>
-                <select id="workout-type" class="form-control">
-                    <optgroup label="Cardio">
-                        <option value="Running" data-calories="11">Running (11 kcal/min)</option>
-                        <option value="Cycling" data-calories="10">Cycling (10 kcal/min)</option>
-                        <option value="Swimming" data-calories="8">Swimming (8 kcal/min)</option>
-                        <option value="Rowing" data-calories="9">Rowing (9 kcal/min)</option>
-                        <option value="Jump Rope" data-calories="12">Jump Rope (12 kcal/min)</option>
-                    </optgroup>
-                    <optgroup label="Strength">
-                        <option value="Weight Lifting" data-calories="6">Weight Lifting (6 kcal/min)</option>
-                        <option value="Push-Ups" data-calories="7">Push-Ups (7 kcal/min)</option>
-                        <option value="Pull-Ups" data-calories="8">Pull-Ups (8 kcal/min)</option>
-                        <option value="Squats" data-calories="7">Squats (7 kcal/min)</option>
-                        <option value="Deadlifts" data-calories="9">Deadlifts (9 kcal/min)</option>
-                    </optgroup>
-                    <optgroup label="Flexibility">
-                        <option value="Yoga" data-calories="4">Yoga (4 kcal/min)</option>
-                        <option value="Pilates" data-calories="5">Pilates (5 kcal/min)</option>
-                        <option value="Stretching" data-calories="3">Stretching (3 kcal/min)</option>
-                        <option value="Tai Chi" data-calories="4">Tai Chi (4 kcal/min)</option>
-                        <option value="Barre" data-calories="5">Barre (5 kcal/min)</option>
-                    </optgroup>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="workout-duration">Duration (minutes):</label>
-                <input type="number" id="workout-duration" class="form-control" placeholder="e.g. 30">
-            </div>
-            <button id="add-workout-btn" class="btn btn-primary" type="button">Add Workout</button>
-        </form>
-        <p class="mt-2">Total Calories Burned: <span id="total-calories-burned" class="font-weight-bold">0</span> kcal</p>
-        <ul id="workout-log" class="list-group mt-2"></ul>
-    </section>
 </div>
+    <!-- step Tracker -->
+    <section id="steptracker" class="tracker-section">
+        <h3>Step Tracker</h3>
+        <div class="form-group">
+            <label for="step-amount">Enter amount of steps:</label>
+            <input type="number" id="step-amount" class="form-control" placeholder="e.g. 8">
+        </div>
+        <button id="add-step-btn" class="btn btn-primary">Add Steps</button>
+        <p class="mt-2">Total Steps: <span id="total-steps" class="font-weight-bold">0</span> </p>
+    </section>
+
+    <div class="content my-4" style="text-align: center;">
+        <!-- <h2>Fitness Tracking</h2>
+        <p>Track your workouts here.</p> -->
+    
+        {% if message %}
+            <p>{{ message }}</p>
+        {% else %}
+            <!-- Step Tracker Graph -->
+            <!-- <h2>Step Tracker</h2>
+            <img src="data:image/png;base64,{{ steps_img_base64 }}" alt="Step Tracker Graph"> -->
+            
+            <!-- Workout Performance Graph -->
+            <h2>Workout Performance</h2>
+            <img src="data:image/png;base64,{{ workouts_img_base64 }}" alt="Workout Performance Graph">
+        {% endif %}
+    </div>
+
+
+<!-- Workout Tracker Form -->
+<section id="workout-tracker" class="tracker-section">
+    <h3>Workout Tracker</h3>
+    <form id="workout-form">
+        <div class="form-group">
+            <label for="workout-type">Select workout type:</label>
+            <select id="workout-type" class="form-control">
+                <optgroup label="Cardio">
+                    <option value="Running" data-calories="11">Running (11 kcal/min)</option>
+                    <option value="Cycling" data-calories="10">Cycling (10 kcal/min)</option>
+                    <option value="Swimming" data-calories="8">Swimming (8 kcal/min)</option>
+                    <option value="Rowing" data-calories="9">Rowing (9 kcal/min)</option>
+                    <option value="Jump Rope" data-calories="12">Jump Rope (12 kcal/min)</option>
+                </optgroup>
+                <optgroup label="Strength">
+                    <option value="Weight Lifting" data-calories="6">Weight Lifting (6 kcal/min)</option>
+                    <option value="Push-Ups" data-calories="7">Push-Ups (7 kcal/min)</option>
+                    <option value="Pull-Ups" data-calories="8">Pull-Ups (8 kcal/min)</option>
+                    <option value="Squats" data-calories="7">Squats (7 kcal/min)</option>
+                    <option value="Deadlifts" data-calories="9">Deadlifts (9 kcal/min)</option>
+                </optgroup>
+                <optgroup label="Flexibility">
+                    <option value="Yoga" data-calories="4">Yoga (4 kcal/min)</option>
+                    <option value="Pilates" data-calories="5">Pilates (5 kcal/min)</option>
+                    <option value="Stretching" data-calories="3">Stretching (3 kcal/min)</option>
+                    <option value="Tai Chi" data-calories="4">Tai Chi (4 kcal/min)</option>
+                    <option value="Barre" data-calories="5">Barre (5 kcal/min)</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="workout-duration">Duration (minutes):</label>
+            <input type="number" id="workout-duration" class="form-control" placeholder="e.g. 30">
+        </div>
+        <button id="add-workout-btn" class="btn btn-primary" type="button">Add Workout</button>
+    </form>
+    <p class="mt-2">Total Calories Burned: <span id="total-calories-burned" class="font-weight-bold">0</span> kcal</p>
+    <ul id="workout-log" class="list-group mt-2"></ul>
+</section>
+
 {% endblock %}
