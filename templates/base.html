@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}49er Health Tracker{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 
 </head>
@@ -30,6 +29,23 @@
                         <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a>
                     <!-- </li> -->
                 {% endif %}
+                <div class="nav-links">
+                <a class="nav-item" href="{{ url_for('habit_tracking') }}">Habit Tracking</a>
+                <a class="nav-item" href="{{ url_for('nutrition_tracking') }}">Nutrition Tracking</a>
+                <a class="nav-item" href="{{ url_for('fitness_tracking') }}">Fitness Tracking</a>
+                <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
+                {% if current_user.is_authenticated %}
+                    <!-- <li class="nav-item"> -->
+                        <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
+                        <a class="btn btn-info" href="{{ url_for('profile') }}">Profile</a>
+                    <!-- </li> -->
+                {% else %}
+                    <!-- <li class="nav-item"> -->
+                        <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a>
+                    <!-- </li> -->
+                {% endif %}
+                <button id="dark-mode-toggle" class="btn">Dark Mode</button>
+            </div>
             </div>
         </div>
     </nav>
@@ -40,4 +56,5 @@
     </div>
 
 </body>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </html>

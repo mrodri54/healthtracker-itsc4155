@@ -21,16 +21,23 @@
         <p>{{ msg }}</p>
     {% endif %}
 
+    <!-- Water Intake Tracker -->
     <section id="water-tracker" class="tracker-section">
         <h3>Water Intake Tracker</h3>
         <div class="form-group">
-            <label for="water-amount">Enter water intake (in liters):</label>
+            <label for="water-amount">Enter water intake:</label>
             <input type="number" id="water-amount" class="form-control" placeholder="e.g. 2">
+            <select id="water-unit" class="form-control mt-2">
+                <option value="liters">Liters</option>
+                <option value="milliliters">Milliliters</option>
+                <option value="ounces">Ounces</option>
+            </select>
         </div>
         <button id="add-water-btn" class="btn btn-primary">Add Water</button>
-        <p class="mt-2">Total Water Intake: <span id="total-water" class="font-weight-bold">0</span> liters</p>
+        <p class="mt-2">Total Water Intake: <span id="total-water" class="font-weight-bold">0</span> <span id="water-unit-label">liters</span></p>
     </section>
-    
+
+    <!-- Sleep Tracker -->
     <section id="sleep-tracker" class="tracker-section">
         <h3>Sleep Tracker</h3>
         <div class="form-group">
@@ -40,7 +47,8 @@
         <button id="add-sleep-btn" class="btn btn-primary">Add Sleep</button>
         <p class="mt-2">Total Sleep: <span id="total-sleep" class="font-weight-bold">0</span> hours</p>
     </section>
-    
+
+    <!-- Daily Habits -->
     <section id="habit-tracker" class="tracker-section">
         <h3>Daily Habits</h3>
         <div class="form-group">
@@ -51,6 +59,4 @@
         <ul id="habit-list" class="list-group mt-2"></ul>
     </section>
 </div>
-
-
 {% endblock %}

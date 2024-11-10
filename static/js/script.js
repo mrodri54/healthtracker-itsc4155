@@ -1,135 +1,123 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (localStorage.getItem('theme') === 'dark') {
+        enableDarkMode();
+    }
+    darkModeToggle.addEventListener('click', toggleDarkMode);
 
-    // Calorie Tracking
-    document.getElementById('add-calorie-btn').addEventListener('click', function() {
-        const calorieInput = document.getElementById('calorie-input').value;
-        if (calorieInput) {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${calorieInput} kcal`;
-            document.getElementById('calorie-list').appendChild(listItem);
-            document.getElementById('calorie-input').value = ''; // Clear input
+    function enableDarkMode() {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.textContent = 'Light Mode';
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.add('dark-mode'));
+    }
+
+    function disableDarkMode() {
+        document.body.classList.remove('dark-mode');
+        darkModeToggle.textContent = 'Dark Mode';
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('dark-mode'));
+    }
+
+    function toggleDarkMode() {
+        if (document.body.classList.contains('dark-mode')) {
+            disableDarkMode();
+            localStorage.setItem('theme', 'light');
         } else {
-            alert('Please enter calorie value!');
+            enableDarkMode();
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Calorie Tracker
+    const calorieInput = document.getElementById('calorie-input');
+    document.getElementById('add-calorie-btn')?.addEventListener('click', function() {
+        if (calorieInput && calorieInput.value) {
+            addToLog('calorie-list', `${calorieInput.value} kcal`);
+            calorieInput.value = ''; // Clear input
+        } else {
+            alert('Please enter a calorie value!');
         }
     });
 
-    // Sleep Tracking
-    document.getElementById('add-sleep-btn').addEventListener('click', function() {
-        const sleepInput = document.getElementById('sleep-input').value;
-        if (sleepInput) {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${sleepInput} hours of sleep`;
-            document.getElementById('sleep-list').appendChild(listItem);
-            document.getElementById('sleep-input').value = ''; // Clear input
+    // Food Intake Tracker with Nutritional Breakdown
+    let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0;
+    document.getElementById('add-food-btn')?.addEventListener('click', function() {
+        const foodSelect = document.getElementById('food-type');
+        const foodQuantity = parseFloat(document.getElementById('food-quantity')?.value || 0);
+
+        if (foodSelect && foodQuantity) {
+            const foodData = foodSelect.selectedOptions[0].dataset;
+            const calories = foodData.calories * foodQuantity;
+            const protein = foodData.protein * foodQuantity;
+            const carbs = foodData.carbs * foodQuantity;
+            const fat = foodData.fat * foodQuantity;
+
+            totalCalories += calories;
+            totalProtein += protein;
+            totalCarbs += carbs;
+            totalFat += fat;
+
+            document.getElementById('total-food-calories').textContent = totalCalories.toFixed(2);
+            addToLog('food-log', `${foodSelect.value} - ${foodQuantity} servings (${calories.toFixed(2)} kcal, ${protein.toFixed(2)}g protein, ${carbs.toFixed(2)}g carbs, ${fat.toFixed(2)}g fat)`);
+
+            document.getElementById('food-quantity').value = '';
         } else {
-            alert('Please enter sleep duration!');
+            alert('Please select a food type and enter a quantity!');
         }
     });
 
-    // Habit Tracking
-    document.getElementById('add-habit-btn').addEventListener('click', function() {
-        const habitInput = document.getElementById('habit-input').value;
-        if (habitInput.trim()) {
-            const listItem = document.createElement('li');
-            listItem.textContent = habitInput;
-            document.getElementById('habit-list').appendChild(listItem);
-            document.getElementById('habit-input').value = ''; // Clear input
-        } else {
-            alert('Please enter a habit!');
-        }
-    });
+    // Workout Tracker with Calories Burned Calculation
+    let totalWorkoutCalories = 0;
+    document.getElementById('add-workout-btn')?.addEventListener('click', function() {
+        const workoutTypeSelect = document.getElementById('workout-type');
+        const workoutDuration = parseInt(document.getElementById('workout-duration')?.value || 0, 10);
 
-    // Fitness Tracking
-    document.getElementById('add-workout-btn').addEventListener('click', function() {
-        const workoutType = document.getElementById('workout-type').value;
-        const workoutDuration = document.getElementById('workout-duration').value;
-        if (workoutType && workoutDuration) {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${workoutType} - ${workoutDuration} minutes`;
-            document.getElementById('workout-list').appendChild(listItem);
-            document.getElementById('workout-type').value = '';
+        if (workoutTypeSelect && workoutDuration) {
+            const caloriesPerMinute = parseInt(workoutTypeSelect.selectedOptions[0].dataset.calories, 10);
+            const caloriesBurned = caloriesPerMinute * workoutDuration;
+            totalWorkoutCalories += caloriesBurned;
+
+            document.getElementById('total-calories-burned').textContent = totalWorkoutCalories.toFixed(2);
+            addToLog('workout-log', `${workoutTypeSelect.value} - ${workoutDuration} minutes (${caloriesBurned} kcal burned)`);
+
             document.getElementById('workout-duration').value = '';
         } else {
-            alert('Please enter workout type and duration!');
+            alert('Please select a workout type and enter a duration!');
         }
     });
 
-    // Water Intake Tracking
-    document.getElementById('add-water-btn').addEventListener('click', function() {
-        const waterInput = document.getElementById('water-amount').value;
-        if (waterInput) {
-            const totalWater = document.getElementById('total-water');
-            totalWater.textContent = parseFloat(totalWater.textContent) + parseFloat(waterInput);
-            document.getElementById('water-amount').value = ''; // Clear input
+    // Water Intake Tracker
+    let totalWaterIntake = 0;
+    document.getElementById('add-water-btn')?.addEventListener('click', function() {
+        const waterAmount = parseFloat(document.getElementById('water-amount')?.value || 0);
+        const waterUnit = document.getElementById('water-unit')?.value || 'liters';
+        if (waterAmount) {
+            totalWaterIntake += waterAmount;
+            document.getElementById('total-water').textContent = `${totalWaterIntake.toFixed(2)} ${waterUnit}`;
+            document.getElementById('water-amount').value = '';
         } else {
-            alert('Please enter water intake value!');
+            alert('Please enter a water intake amount!');
         }
     });
 
-    // Sleep Tracking (Total)
-    document.getElementById('add-sleep-btn').addEventListener('click', function() {
-        const sleepInput = document.getElementById('sleep-hours').value;
-        if (sleepInput) {
-            const totalSleep = document.getElementById('total-sleep');
-            totalSleep.textContent = parseFloat(totalSleep.textContent) + parseFloat(sleepInput);
-            document.getElementById('sleep-hours').value = ''; // Clear input
+    // Sleep Tracker
+    let totalSleepHours = 0;
+    document.getElementById('add-sleep-btn')?.addEventListener('click', function() {
+        const sleepHours = parseFloat(document.getElementById('sleep-hours')?.value || 0);
+        if (sleepHours) {
+            totalSleepHours += sleepHours;
+            document.getElementById('total-sleep').textContent = `${totalSleepHours.toFixed(2)} hours`;
+            document.getElementById('sleep-hours').value = '';
         } else {
             alert('Please enter sleep hours!');
         }
     });
 
-    // Fitness Tracking: Add workout and calculate calories burned
-    document.getElementById('add-workout-btn').addEventListener('click', function() {
-        const workoutType = document.getElementById('workout-type').value;
-        const workoutDuration = document.getElementById('workout-duration').value;
-
-        if (workoutType && workoutDuration) {
-            const workoutElement = document.querySelector(`#workout-type option[value="${workoutType}"]`);
-            const caloriesPerMinute = workoutElement.dataset.calories;
-            const caloriesBurned = caloriesPerMinute * workoutDuration;
-
-            // Update total calories burned
-            const totalCaloriesElement = document.getElementById('total-calories-burned');
-            totalCaloriesElement.textContent = parseFloat(totalCaloriesElement.textContent) + parseFloat(caloriesBurned);
-
-            // Add workout to the log
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
-            listItem.textContent = `${workoutType} - ${workoutDuration} minutes (${caloriesBurned} kcal burned)`;
-            document.getElementById('workout-log').appendChild(listItem);
-
-            // Clear input fields
-            document.getElementById('workout-duration').value = '';
-        } else {
-            alert('Please enter workout type and duration!');
-        }
-    });
-
-    // Nutrition Tracking: Add food and calculate calories
-    document.getElementById('add-food-btn').addEventListener('click', function() {
-        const foodType = document.getElementById('food-type').value;
-        const foodQuantity = document.getElementById('food-quantity').value;
-
-        if (foodType && foodQuantity) {
-            const foodElement = document.querySelector(`#food-type option[value="${foodType}"]`);
-            const caloriesPerUnit = foodElement.dataset.calories;
-            const caloriesConsumed = caloriesPerUnit * foodQuantity;
-
-            // Update total calories consumed
-            const totalCaloriesElement = document.getElementById('total-calories-consumed');
-            totalCaloriesElement.textContent = parseFloat(totalCaloriesElement.textContent) + parseFloat(caloriesConsumed);
-
-            // Add food to the log
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
-            listItem.textContent = `${foodType} - ${foodQuantity} (${caloriesConsumed} kcal)`;
-            document.getElementById('food-log').appendChild(listItem);
-
-            // Clear input fields
-            document.getElementById('food-quantity').value = '';
-        } else {
-            alert('Please enter food type and quantity!');
-        }
-    });
-
+    // Helper function to add items to logs
+    function addToLog(logId, text) {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+        listItem.textContent = text;
+        document.getElementById(logId).appendChild(listItem);
+    }
 });
