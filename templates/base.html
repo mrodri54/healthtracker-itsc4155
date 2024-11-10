@@ -21,12 +21,12 @@
                 <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
                 {% if current_user.is_authenticated %}
                     <!-- <li class="nav-item"> -->
-                        <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
-                        <a class="btn btn-info" href="{{ url_for('profile') }}">Profile</a>
+                        <button class="nav-button" onclick="window.location.href='/logout'">Logout</button>
+                        <a class="nav-button" href="{{ url_for('profile') }}">Profile</a>
                     <!-- </li> -->
                 {% else %}
                     <!-- <li class="nav-item"> -->
-                        <a class="btn btn-primary" href="{{ url_for('userlogin') }}">Login</a>
+                        <a class="nav-button" href="{{ url_for('userlogin') }}">Login</a>
                     <!-- </li> -->
                 {% endif %}
                 <!-- <div class="nav-links">
@@ -57,4 +57,3 @@
 
 </body>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</html>
