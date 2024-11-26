@@ -8,6 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from models import db, User, create_initial_user, HealthData, create_initial_health_data
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import time
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -16,7 +18,7 @@ app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Interstellar101_@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Apel!220@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)
@@ -96,7 +98,7 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     # Check if user exists and password matches
-    if user and user.password == password:  # Remember to hash passwords in production
+    if user and check_password_hash(user.password, password):  # Remember to hash passwords in production
         login_user(user)  # Flask-Login's login_user function
         flash('Login successful!', 'success')
         return redirect(url_for('home'))
@@ -292,9 +294,38 @@ def fitness_tracking():
 def fitness_guide():
     return render_template('fitnessguide.html')
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+
+        # Check if the user already exists
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered. Please log in.', 'error')
+            return redirect(url_for('userlogin'))
+        
+        # Hash the password
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        
+        # Create a new user, including the username
+        new_user = User(username=username, email=email, password=hashed_password, 
+                        first_name=first_name, last_name=last_name)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Account created successfully. Please log in.', 'success')
+        return redirect(url_for('userlogin'))
+
+    return render_template('signup.html')
+
 @app.route('/index')
 def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True, threaded=False)
+    app.run(host="0.0.0.0", port = 5001, debug=True, threaded=False)
