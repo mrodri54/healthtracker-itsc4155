@@ -19,7 +19,7 @@ class User(db.Model, UserMixin):
 def create_initial_user():
     # Create a user if the table is empty
     if User.query.count() == 0:  # Check if there are existing users
-        new_user = User(username='testuser', email='test@example.com', password='testpassword')
+        new_user = User(username='testuser', email='test@example.com', password='testpassword', first_name="testfirst", last_name="testlast")
         db.session.add(new_user)
         db.session.commit()
 

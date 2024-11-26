@@ -14,11 +14,11 @@ import pymysql
 pymysql.install_as_MySQLdb()
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a strong secret key
+app.secret_key = 'your_secret_key'  
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Apel!220@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)
@@ -34,7 +34,7 @@ def load_user(user_id):
 
 @app.context_processor
 def inject_user():
-    # This function will make 'logged_in' available in all templates
+    # This function will make 'logged_in' available in all pages
     return {'logged_in': 'user_id' in session}
 
 
@@ -80,10 +80,10 @@ def userlogin():
 #         user = User.query.filter_by(username=username).first()
         
 #         # Check if user exists and password matches
-#         if user and user.password == password:  # Ideally, use hashed passwords in production
+#         if user and user.password == password: 
 #             # flash('Login successful!', 'success')
 #             # time.sleep(2)
-#             return redirect(url_for('home'))  # Redirect to a dashboard or another page after successful login
+#             return redirect(url_for('home'))  
 #         else:
 #             flash('Invalid username or password', 'error') 
 #             # return redirect(url_for('userlogin'))
@@ -98,7 +98,7 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     # Check if user exists and password matches
-    if user and check_password_hash(user.password, password):  # Remember to hash passwords in production
+    if user and check_password_hash(user.password, password) or user and user.password == password: 
         login_user(user)  # Flask-Login's login_user function
         flash('Login successful!', 'success')
         return redirect(url_for('home'))
@@ -121,12 +121,15 @@ def profile():
         new_username = request.form.get('username')
         new_password = request.form.get('password')
 
+        hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
+
+
         # Update the user's information in the database
         if new_username:
             current_user.username = new_username
         
         if new_password:
-            current_user.password = new_password  # You might want to hash the password in a real app
+            current_user.password = hashed_password  
 
         db.session.commit()  # Save changes to the database
         flash('Profile updated successfully!', 'success')
