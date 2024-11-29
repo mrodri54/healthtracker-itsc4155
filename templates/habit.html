@@ -21,7 +21,7 @@
         <p>{{ msg }}</p>
     {% endif %}
     <!-- Sleep Tracker -->
-    <section id="sleep-tracker" class="tracker-section">
+    <!-- <section id="sleep-tracker" class="tracker-section">
         <h3>Sleep Tracker</h3>
         <div class="form-group">
             <label for="sleep-hours">Enter hours of sleep:</label>
@@ -29,7 +29,7 @@
         </div>
         <button id="add-sleep-btn" class="btn btn-primary">Add Sleep</button>
         <p class="mt-2">Total Sleep: <span id="total-sleep" class="font-weight-bold">0</span> hours</p>
-    </section>
+    </section> -->
 
     {% if sleep_graph and screen_time_graph %}
     <!-- <div style="text-align: center;">
@@ -37,7 +37,7 @@
         <img src="data:image/png;base64,{{ sleep_graph }}" alt="Sleep Log Graph">
     </div> -->
 
-    <div style="text-align: center;">
+    <div style="text-align: center; margin-top: 10%; margin-bottom: 5%;">
         <h2>Screen Time Tracker</h2>
         <img src="data:image/png;base64,{{ screen_time_graph }}" alt="Screen Time Graph">
     </div>
@@ -47,7 +47,7 @@
 
 
     <!-- screen time Tracker -->
-    <section id="screentime-tracker" class="tracker-section">
+    <!-- <section id="screentime-tracker" class="tracker-section">
         <h3>Screen time Tracker</h3>
         <div class="form-group">
             <label for="screentime-amount">Enter amount of hours slept:</label>
@@ -55,7 +55,7 @@
         </div>
         <button id="add-screentime-btn" class="btn btn-primary">Add Screen time</button>
         <p class="mt-2">Total Screen time: <span id="total-screentime" class="font-weight-bold">0</span> hours</p>
-    </section>
+    </section> -->
 
 
 {% endblock %}

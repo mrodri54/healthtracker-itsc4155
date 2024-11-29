@@ -123,6 +123,9 @@ body {
 .navbar {
     padding: 1% 0;
     background-color: #00471e;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-between; */
 }
 .nav-links {
     display: flex;
@@ -160,6 +163,11 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 90%;
     margin: auto;
+    margin-top: 10%;
+}
+
+.data_input {
+    margin-top: 2%;
 }
 
 /* Dark Mode Styles */

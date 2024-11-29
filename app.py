@@ -18,7 +18,7 @@ app.secret_key = 'your_secret_key'
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Interstellar101_@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)
@@ -37,26 +37,11 @@ def inject_user():
     # This function will make 'logged_in' available in all pages
     return {'logged_in': 'user_id' in session}
 
-
-
 # Create tables and an initial user in the database
 with app.app_context():
     db.create_all()  # Create all tables
     create_initial_user() 
     create_initial_health_data()
-
-
-# @app.route('/')
-# def home():
-#     # Query all health data for the user with id=1
-#     user = User.query.get(1)  # Fetch the test user with id=1
-    
-#     if user:
-#         health_data_list = user.health_data  # Get all health data associated with the user
-#     else:
-#         health_data_list = []  # If no user or no data, send an empty list
-
-#     return render_template('index.html', health_data_list=health_data_list)
 
 @app.route('/')
 def home():
@@ -70,24 +55,6 @@ def home():
 def userlogin():
     return render_template('login.html')
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         username = request.form.get('username')
-#         password = request.form.get('password')
-        
-#         # Fetch the user from the database
-#         user = User.query.filter_by(username=username).first()
-        
-#         # Check if user exists and password matches
-#         if user and user.password == password: 
-#             # flash('Login successful!', 'success')
-#             # time.sleep(2)
-#             return redirect(url_for('home'))  
-#         else:
-#             flash('Invalid username or password', 'error') 
-#             # return redirect(url_for('userlogin'))
-#     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -138,9 +105,33 @@ def profile():
     # Render the profile page and pass the current user info
     return render_template('profile.html', user=current_user)
 
-# @app.route('/habit')
-# def habit_tracking():
-#     return render_template('habit.html')
+
+@app.route('/add_health_data', methods=['POST'])
+@login_required
+def add_health_data():
+    # Get form data
+    weight = request.form.get('weight', type=float)
+    steps = request.form.get('steps', type=int)
+    calories_intake = request.form.get('calories_intake', type=int)
+    workouts = request.form.get('workouts', type=int)
+    sleep_hours = request.form.get('sleep_hours', type=float)
+    screen_time = request.form.get('screen_time', type=float)
+
+    # Create a new record
+    new_data = HealthData(
+        user_id=current_user.id,
+        weight=weight,
+        steps=steps,
+        calories_intake=calories_intake,
+        workouts=workouts,
+        sleep_hours=sleep_hours,
+        screen_time=screen_time
+    )
+    db.session.add(new_data)
+    db.session.commit()
+
+    return redirect(url_for('home'))  # Redirect to a dashboard or another page
+
 
 @app.route('/habit')
 @login_required
@@ -193,9 +184,6 @@ def habit_tracking():
                            sleep_graph=sleep_graph_base64, 
                            screen_time_graph=screen_time_graph_base64)
 
-# @app.route('/nutrition')
-# def nutrition_tracking():
-#     return render_template('nutrition.html')
 
 @app.route('/nutrition')
 @login_required  # Ensure the user is logged in
@@ -237,9 +225,6 @@ def nutrition_tracking():
     # Pass the base64 encoded image and any other necessary data to the template
     return render_template('nutrition.html', img_base64=img_base64)
 
-# @app.route('/fitnesstracking')
-# def fitness_tracking():
-#     return render_template('fitnesstracking.html')
 
 @app.route('/fitnesstracking')
 @login_required  # Ensure the user is logged in
