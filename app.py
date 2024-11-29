@@ -49,7 +49,8 @@ def home():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         health_data_list = user.health_data if user else []
-        return render_template('index.html', health_data_list=health_data_list)
+        today_date = datetime.now().strftime('%Y-%m-%d')
+        return render_template('index.html', health_data_list=health_data_list, today_date=today_date)
     return redirect(url_for('userlogin'))
 
 @app.route('/userlogin')
@@ -110,7 +111,13 @@ def profile():
 @app.route('/add_health_data', methods=['POST'])
 @login_required
 def add_health_data():
-    # Get form data
+    # Get form data including date
+    date_str = request.form.get('date')
+    print(f"Received date from form: {date_str}")  # Debug print
+    
+    date = datetime.strptime(date_str, '%Y-%m-%d') if date_str else datetime.now()
+    print(f"Parsed date: {date}")  # Debug print
+    
     weight = request.form.get('weight', type=float)
     steps = request.form.get('steps', type=int)
     calories_intake = request.form.get('calories_intake', type=int)
@@ -118,9 +125,10 @@ def add_health_data():
     sleep_hours = request.form.get('sleep_hours', type=float)
     screen_time = request.form.get('screen_time', type=float)
 
-    # Create a new record
+    # Create a new record with the specified date
     new_data = HealthData(
         user_id=current_user.id,
+        date=date,  # Use the date from the form
         weight=weight,
         steps=steps,
         calories_intake=calories_intake,
@@ -325,7 +333,10 @@ def update_habit_graph():
     # Get data with proper date filtering
     end_date = datetime.now()
     if timeframe == 'daily':
-        start_date = end_date - timedelta(days=1)
+        # Set start_date to the beginning of today (midnight)
+        start_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        # Set end_date to the end of today
+        end_date = start_date + timedelta(days=1)
     elif timeframe == 'weekly':
         start_date = end_date - timedelta(weeks=1)
     else:  # monthly
@@ -341,13 +352,13 @@ def update_habit_graph():
         dates = [d.date for d in data]
         if graph_type == 'sleep':
             values = [d.sleep_hours for d in data if d.sleep_hours is not None]
-            title = f'Sleep Log ({timeframe.capitalize()} View)'
+            title = 'Sleep Log - Today' if timeframe == 'daily' else f'Sleep Log ({timeframe.capitalize()} View)'
             ylabel = 'Sleep Hours'
             color = 'b'
             marker = 'o'
         elif graph_type == 'screen':
             values = [d.screen_time for d in data if d.screen_time is not None]
-            title = f'Screen Time ({timeframe.capitalize()} View)'
+            title = 'Screen Time - Today' if timeframe == 'daily' else f'Screen Time ({timeframe.capitalize()} View)'
             ylabel = 'Screen Time (hours)'
             color = 'r'
             marker = 's'
@@ -355,16 +366,24 @@ def update_habit_graph():
             return jsonify({'success': False, 'error': 'Invalid graph type'})
 
         if not values:
-            return jsonify({'success': False, 'error': 'No data available'})
+            return jsonify({'success': False, 'error': 'No data available for today'})
 
         # Create the plot
         plt.figure(figsize=(10, 5))
-        plt.plot(dates, values, color=color, marker=marker, linestyle='-')
+        if timeframe == 'daily':
+            # For daily view, use a single bar
+            plt.bar(['Today'], values[-1], color=color, alpha=0.7)  # Just show the latest value
+            plt.ylim(0, max(values[-1] * 1.2, 1))  # Set y-axis limit with some padding
+        else:
+            plt.plot(dates, values, color=color, marker=marker, linestyle='-')
+            plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
+            plt.xticks(rotation=45)
+
+        # Add labels and title
         plt.title(title)
-        plt.xlabel('Date')
+        plt.xlabel('Date' if timeframe != 'daily' else 'Time')
         plt.ylabel(ylabel)
         plt.grid(True)
-        plt.xticks(rotation=45)
 
         # Save plot to bytes buffer
         buf = io.BytesIO()

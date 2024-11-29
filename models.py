@@ -28,7 +28,7 @@ def create_initial_user():
 class HealthData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
+    date = db.Column(db.DateTime, nullable=False)  # Remove the default
 
     weight = db.Column(db.Float, nullable=False)  # Weight
     steps = db.Column(db.Integer, nullable=True)  # Steps walked
@@ -75,20 +75,20 @@ def create_initial_health_data():
         health_data = HealthData.query.filter_by(user_id=user.id).first()
         
         if health_data:  # If health data exists, update it
+            health_data.date = datetime.now()
             health_data.weight = 145
             health_data.steps = 8000
             health_data.calories_intake = 2200
             health_data.workouts = 2
             health_data.sleep_hours = 7.5
             health_data.screen_time = 5.0
-            # Remove or update 'calories_burned' if necessary
-            # health_data.calories_burned = 300  # If this column still exists and you want to modify it
             
-            db.session.commit()  # Commit the changes
+            db.session.commit()
             print("Health data for user updated!")
         else:  # If no health data exists, create it
             initial_data = HealthData(
                 user_id=user.id,
+                date=datetime.now(),
                 weight=145, 
                 steps=8000,
                 calories_intake=2200,
