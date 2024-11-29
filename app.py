@@ -403,5 +403,76 @@ def update_habit_graph():
         print(f"Error generating graph: {str(e)}")
         return jsonify({'success': False, 'error': str(e)})
 
+@app.route('/update_fitness_graph')
+@login_required
+def update_fitness_graph():
+    graph_type = request.args.get('type')
+    timeframe = request.args.get('timeframe')
+    
+    # Get data with proper date filtering
+    end_date = datetime.now()
+    if timeframe == 'daily':
+        start_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = start_date + timedelta(days=1)
+    elif timeframe == 'weekly':
+        start_date = end_date - timedelta(weeks=1)
+    else:  # monthly
+        start_date = end_date - timedelta(days=30)
+
+    data = HealthData.query.filter(
+        HealthData.user_id == current_user.id,
+        HealthData.date.between(start_date, end_date)
+    ).order_by(HealthData.date).all()
+
+    try:
+        dates = [d.date for d in data]
+        if graph_type == 'steps':
+            values = [d.steps for d in data if d.steps is not None]
+            title = 'Step Tracker - Today' if timeframe == 'daily' else f'Step Tracker ({timeframe.capitalize()} View)'
+            ylabel = 'Steps'
+            color = 'skyblue'
+            marker = 'o'
+        elif graph_type == 'workouts':
+            values = [d.workouts for d in data if d.workouts is not None]
+            title = 'Workout Performance - Today' if timeframe == 'daily' else f'Workout Performance ({timeframe.capitalize()} View)'
+            ylabel = 'Number of Workouts'
+            color = 'orange'
+            marker = 's'
+        else:
+            return jsonify({'success': False, 'error': 'Invalid graph type'})
+
+        if not values:
+            return jsonify({'success': False, 'error': 'No data available'})
+
+        plt.figure(figsize=(10, 5))
+        if timeframe == 'daily':
+            plt.bar(['Today'], values[-1], color=color, alpha=0.7)
+            plt.ylim(0, max(values[-1] * 1.2, 1))
+        else:
+            plt.plot(dates, values, color=color, marker=marker, linestyle='-')
+            plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
+            plt.xticks(rotation=45)
+
+        plt.title(title)
+        plt.xlabel('Date' if timeframe != 'daily' else '')
+        plt.ylabel(ylabel)
+        plt.grid(True)
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight')
+        buf.seek(0)
+        plt.close()
+
+        graph_base64 = base64.b64encode(buf.getvalue()).decode()
+        
+        return jsonify({
+            'success': True,
+            'graph': graph_base64
+        })
+
+    except Exception as e:
+        print(f"Error generating graph: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port = 5001, debug=True, threaded=False)
