@@ -3,7 +3,7 @@ matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI plotting
 import matplotlib.pyplot as plt
 import io
 import base64
-from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, create_initial_user, HealthData, create_initial_health_data
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -12,13 +12,14 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import pymysql
 pymysql.install_as_MySQLdb()
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Interstellar101_@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysqlpassword1@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)
@@ -314,6 +315,74 @@ def signup():
 @app.route('/index')
 def index():
     return render_template('index.html')
+
+@app.route('/update_habit_graph')
+@login_required
+def update_habit_graph():
+    graph_type = request.args.get('type')
+    timeframe = request.args.get('timeframe')
+    
+    # Get data with proper date filtering
+    end_date = datetime.now()
+    if timeframe == 'daily':
+        start_date = end_date - timedelta(days=1)
+    elif timeframe == 'weekly':
+        start_date = end_date - timedelta(weeks=1)
+    else:  # monthly
+        start_date = end_date - timedelta(days=30)
+
+    data = HealthData.query.filter(
+        HealthData.user_id == current_user.id,
+        HealthData.date.between(start_date, end_date)
+    ).order_by(HealthData.date).all()
+
+    try:
+        # Query data based on graph type
+        dates = [d.date for d in data]
+        if graph_type == 'sleep':
+            values = [d.sleep_hours for d in data if d.sleep_hours is not None]
+            title = f'Sleep Log ({timeframe.capitalize()} View)'
+            ylabel = 'Sleep Hours'
+            color = 'b'
+            marker = 'o'
+        elif graph_type == 'screen':
+            values = [d.screen_time for d in data if d.screen_time is not None]
+            title = f'Screen Time ({timeframe.capitalize()} View)'
+            ylabel = 'Screen Time (hours)'
+            color = 'r'
+            marker = 's'
+        else:
+            return jsonify({'success': False, 'error': 'Invalid graph type'})
+
+        if not values:
+            return jsonify({'success': False, 'error': 'No data available'})
+
+        # Create the plot
+        plt.figure(figsize=(10, 5))
+        plt.plot(dates, values, color=color, marker=marker, linestyle='-')
+        plt.title(title)
+        plt.xlabel('Date')
+        plt.ylabel(ylabel)
+        plt.grid(True)
+        plt.xticks(rotation=45)
+
+        # Save plot to bytes buffer
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight')
+        buf.seek(0)
+        plt.close()
+
+        # Convert to base64
+        graph_base64 = base64.b64encode(buf.getvalue()).decode()
+        
+        return jsonify({
+            'success': True,
+            'graph': graph_base64
+        })
+
+    except Exception as e:
+        print(f"Error generating graph: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port = 5001, debug=True, threaded=False)

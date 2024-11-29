@@ -10,52 +10,69 @@
     {% if sleep_graph and screen_time_graph %}
         <div style="text-align: center;">
             <h2>Sleep Log</h2>
-            <img src="data:image/png;base64,{{ sleep_graph }}" alt="Sleep Log Graph">
+            <div class="view-controls">
+                <button class="btn btn-outline-primary" data-type="sleep" data-timeframe="daily">Daily</button>
+                <button class="btn btn-outline-primary" data-type="sleep" data-timeframe="weekly">Weekly</button>
+                <button class="btn btn-outline-primary" data-type="sleep" data-timeframe="monthly">Monthly</button>
+            </div>
+            <div id="sleep-graph-container">
+                <img id="sleep-graph" src="data:image/png;base64,{{ sleep_graph }}" alt="Sleep Log Graph">
+            </div>
         </div>
 
-        <!-- <div style="text-align: center;">
+        <div style="text-align: center; margin-top: 10%; margin-bottom: 5%;">
             <h2>Screen Time Tracker</h2>
-            <img src="data:image/png;base64,{{ screen_time_graph }}" alt="Screen Time Graph">
-        </div> -->
+            <div class="view-controls">
+                <button class="btn btn-outline-primary" data-type="screen" data-timeframe="daily">Daily</button>
+                <button class="btn btn-outline-primary" data-type="screen" data-timeframe="weekly">Weekly</button>
+                <button class="btn btn-outline-primary" data-type="screen" data-timeframe="monthly">Monthly</button>
+            </div>
+            <div id="screen-graph-container">
+                <img id="screen-graph" src="data:image/png;base64,{{ screen_time_graph }}" alt="Screen Time Graph">
+            </div>
+        </div>
     {% else %}
         <p>{{ msg }}</p>
     {% endif %}
-    <!-- Sleep Tracker -->
-    <!-- <section id="sleep-tracker" class="tracker-section">
-        <h3>Sleep Tracker</h3>
-        <div class="form-group">
-            <label for="sleep-hours">Enter hours of sleep:</label>
-            <input type="number" id="sleep-hours" class="form-control" placeholder="e.g. 8">
-        </div>
-        <button id="add-sleep-btn" class="btn btn-primary">Add Sleep</button>
-        <p class="mt-2">Total Sleep: <span id="total-sleep" class="font-weight-bold">0</span> hours</p>
-    </section> -->
-
-    {% if sleep_graph and screen_time_graph %}
-    <!-- <div style="text-align: center;">
-        <h2>Sleep Log</h2>
-        <img src="data:image/png;base64,{{ sleep_graph }}" alt="Sleep Log Graph">
-    </div> -->
-
-    <div style="text-align: center; margin-top: 10%; margin-bottom: 5%;">
-        <h2>Screen Time Tracker</h2>
-        <img src="data:image/png;base64,{{ screen_time_graph }}" alt="Screen Time Graph">
-    </div>
-{% else %}
-    <p>{{ msg }}</p>
-{% endif %}
-
-
-    <!-- screen time Tracker -->
-    <!-- <section id="screentime-tracker" class="tracker-section">
-        <h3>Screen time Tracker</h3>
-        <div class="form-group">
-            <label for="screentime-amount">Enter amount of hours slept:</label>
-            <input type="number" id="screentime-amount" class="form-control" placeholder="e.g. 8">
-        </div>
-        <button id="add-screentime-btn" class="btn btn-primary">Add Screen time</button>
-        <p class="mt-2">Total Screen time: <span id="total-screentime" class="font-weight-bold">0</span> hours</p>
-    </section> -->
-
-
+</div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.view-controls button');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const type = this.dataset.type;
+            const timeframe = this.dataset.timeframe;
+            const container = document.getElementById(`${type}-graph-container`);
+            const img = document.getElementById(`${type}-graph`);
+            
+            this.closest('.view-controls').querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            container.style.opacity = '0.5';
+            
+            fetch(`/update_habit_graph?type=${type}&timeframe=${timeframe}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        img.src = `data:image/png;base64,${data.graph}`;
+                    } else {
+                        alert('Failed to update graph');
+                    }
+                    container.style.opacity = '1';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    container.style.opacity = '1';
+                });
+        });
+    });
+});
+</script>
+{% endblock %}
+y
