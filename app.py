@@ -19,7 +19,7 @@ app.secret_key = 'your_secret_key'
 
 
 #Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysqlpassword1@localhost/healthtracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:PASSWORD@localhost/healthtracker'
 
 #Initialize the Database
 # db = SQLAlchemy(app)
@@ -35,12 +35,12 @@ def load_user(user_id):
 
 @app.context_processor
 def inject_user():
-    # This function will make 'logged_in' available in all pages
+    # This will make 'logged_in' available in all pages
     return {'logged_in': 'user_id' in session}
 
-# Create tables and an initial user in the database
+# Creates tables and an initial user in the database if not already present
 with app.app_context():
-    db.create_all()  # Create all tables
+    db.create_all()  # Creates all tables
     create_initial_user() 
     create_initial_health_data()
 
@@ -63,11 +63,11 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    # Fetch the user from the database
+    # Grabs the user from the database
     user = User.query.filter_by(username=username).first()
 
-    # Check if user exists and password matches
-    if user and check_password_hash(user.password, password) or user and user.password == password: 
+    # Checks if the user exists and password matches
+    if user and check_password_hash(user.password, password): 
         login_user(user)  # Flask-Login's login_user function
         flash('Login successful!', 'success')
         return redirect(url_for('home'))
@@ -83,26 +83,26 @@ def logout():
     return redirect(url_for('userlogin'))
 
 @app.route('/profile', methods=['GET', 'POST'])
-@login_required  # Ensure the user is logged in
+@login_required  # Ensures the user is logged in
 def profile():
     if request.method == 'POST':
-        # Get new username and password from the form
+        # Gets new username and password from the form
         new_username = request.form.get('username')
         new_password = request.form.get('password')
 
         hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
 
 
-        # Update the user's information in the database
+        # Updates the user's information in the database
         if new_username:
             current_user.username = new_username
         
         if new_password:
             current_user.password = hashed_password  
 
-        db.session.commit()  # Save changes to the database
+        db.session.commit()  # Saves changes to the database
         flash('Profile updated successfully!', 'success')
-        return redirect(url_for('profile'))  # Redirect to the profile page after update
+        return redirect(url_for('profile'))  # Redirects to the profile page after update
     
     # Render the profile page and pass the current user info
     return render_template('profile.html', user=current_user)
@@ -125,10 +125,10 @@ def add_health_data():
     sleep_hours = request.form.get('sleep_hours', type=float)
     screen_time = request.form.get('screen_time', type=float)
 
-    # Create a new record with the specified date
+    # Creates a new record with the specified date
     new_data = HealthData(
         user_id=current_user.id,
-        date=date,  # Use the date from the form
+        date=date,  # Uses the date from the form
         weight=weight,
         steps=steps,
         calories_intake=calories_intake,
@@ -139,13 +139,13 @@ def add_health_data():
     db.session.add(new_data)
     db.session.commit()
 
-    return redirect(url_for('home'))  # Redirect to a dashboard or another page
+    return redirect(url_for('home'))  # Redirect to home
 
 
 @app.route('/habit')
 @login_required
 def habit_tracking():
-    # Fetch the health data for the logged-in user
+    # grabs the health data for the logged-in user
     user = current_user
     health_data = HealthData.query.filter_by(user_id=user.id).order_by(HealthData.date.asc()).all()
 
@@ -154,11 +154,11 @@ def habit_tracking():
     sleep_hours = [data.sleep_hours for data in health_data if data.sleep_hours is not None]
     screen_time = [data.screen_time for data in health_data if data.screen_time is not None]
 
-    # Check if data is available
+    # Checks if the data is available
     if not sleep_hours or not screen_time:
         return render_template('habit.html', msg="No data available.")
 
-    # Create the first graph (Sleep Hours)
+    # Creates the first graph (Sleep Hours)
     fig, (ax1) = plt.subplots(figsize=(10, 5))
     ax1.plot(dates, sleep_hours, color='b', marker='o', linestyle='-', label='Sleep Hours')
     ax1.set_xlabel('Date')
@@ -166,14 +166,14 @@ def habit_tracking():
     ax1.set_title(f'Sleep Log for {user.username}')
     plt.xticks(rotation=45)
 
-    # Save the Sleep Log graph to a BytesIO object and encode in base64
+    # Saves the Sleep Log graph to a BytesIO object and encode in base64
     img = io.BytesIO()
     plt.savefig(img, format='png')
     img.seek(0)
     sleep_graph_base64 = base64.b64encode(img.getvalue()).decode('utf-8')
     plt.close(fig)  # Close the first plot
 
-    # Create the second graph (Screen Time)
+    # Creates the second graph (Screen Time)
     fig, (ax2) = plt.subplots(figsize=(10, 5))
     ax2.plot(dates, screen_time, color='r', marker='s', linestyle='-', label='Screen Time')
     ax2.set_xlabel('Date')
@@ -181,36 +181,35 @@ def habit_tracking():
     ax2.set_title(f'Screen Time Tracker for {user.username}')
     plt.xticks(rotation=45)
 
-    # Save the Screen Time graph to a BytesIO object and encode in base64
+    # Saves the Screen Time graph to a BytesIO object and encode in base64
     img = io.BytesIO()
     plt.savefig(img, format='png')
     img.seek(0)
     screen_time_graph_base64 = base64.b64encode(img.getvalue()).decode('utf-8')
     plt.close(fig)  # Close the second plot
 
-    # Render the 'habit.html' template with the encoded graphs
+    # Renders the 'habit.html' template with the encoded graphs
     return render_template('habit.html', 
-                           sleep_graph=sleep_graph_base64, 
-                           screen_time_graph=screen_time_graph_base64)
+                           sleep_graph=sleep_graph_base64, screen_time_graph=screen_time_graph_base64)
 
 
 @app.route('/nutrition')
-@login_required  # Ensure the user is logged in
+@login_required  # Makes sure the user is logged in
 def nutrition_tracking():
     user = current_user
-    # Get the last 30 days of data by default
+    # Gets the last 30 days of data by default
     end_date = datetime.now()
     start_date = end_date - timedelta(days=30)
     
     health_data = HealthData.query.filter(
         HealthData.user_id == user.id,
         HealthData.date.between(start_date, end_date)
-    ).order_by(HealthData.date.asc()).all()  # Order by ascending date
+    ).order_by(HealthData.date.asc()).all()  # Orders by ascending date
 
     if not health_data:
         return render_template('nutrition.html', message="No data available.")
 
-    # Create the plot
+    # Creates the plot
     plt.figure(figsize=(10, 5))
     dates = [d.date for d in health_data]
     calories = [d.calories_intake for d in health_data if d.calories_intake is not None]
@@ -225,7 +224,7 @@ def nutrition_tracking():
     plt.ylabel('Calories Consumed')
     plt.grid(True)
 
-    # Save plot to bytes buffer
+    # Saves plot to bytes buffer
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight')
     buf.seek(0)
@@ -236,20 +235,20 @@ def nutrition_tracking():
 
 
 @app.route('/fitnesstracking')
-@login_required  # Ensure the user is logged in
+@login_required  # Makes sure the user is logged in
 def fitness_tracking():
-    # Get the current user from Flask-Login
+    # Grabs the current user from Flask-Login
     user = current_user
 
-    # Query the HealthData model to get the steps and workout performance data for this user
+    # Queries the HealthData model to get the steps and workout performance data for the user
     health_data = HealthData.query.filter_by(user_id=user.id).order_by(HealthData.date.asc()).all()
 
-    # Extract dates, steps, and workouts data
+    # Extracts dates, steps, and workouts data
     dates = [data.date.strftime('%Y-%m-%d') for data in health_data]
     steps = [data.steps for data in health_data]
     workouts = [data.workouts for data in health_data]
 
-    # If no data is found, return empty plots
+    # If no data is found it return empty plots
     if not health_data:
         return render_template('fitnesstracking.html', steps_img_base64=None, workouts_img_base64=None, message="No data available for this user.")
 
@@ -284,8 +283,7 @@ def fitness_tracking():
 
     # Pass the base64 encoded images to the template
     return render_template('fitnesstracking.html', 
-                           steps_img_base64=steps_img_base64,
-                           workouts_img_base64=workouts_img_base64)
+                           steps_img_base64=steps_img_base64, workouts_img_base64=workouts_img_base64)
 
 @app.route('/fitnessguide')
 def fitness_guide():
@@ -300,22 +298,26 @@ def signup():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
 
-        # Check if the user already exists
+        # Checks if the user already exists
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash('Email already registered. Please log in.', 'error')
             return redirect(url_for('userlogin'))
+        if not username or not password:
+            flash('This field is required', 'error')
+            return redirect(url_for('signup'))
         
-        # Hash the password
+        # Hashes the password
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         
-        # Create a new user, including the username
+        # Creates a new user, including the username
         new_user = User(username=username, email=email, password=hashed_password, 
                         first_name=first_name, last_name=last_name)
         db.session.add(new_user)
         db.session.commit()
 
         flash('Account created successfully. Please log in.', 'success')
+
         return redirect(url_for('userlogin'))
 
     return render_template('signup.html')
@@ -330,7 +332,7 @@ def update_habit_graph():
     graph_type = request.args.get('type')
     timeframe = request.args.get('timeframe')
     
-    # Get data with proper date filtering
+    # Gets data with date filtering
     end_date = datetime.now()
     if timeframe == 'daily':
         start_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -348,8 +350,8 @@ def update_habit_graph():
     ).order_by(HealthData.date.asc()).all()
 
     try:
-        # Query data based on graph type
-        dates = [d.date.date() for d in data]  # Convert datetime to date
+        # Queries data based on graph type
+        dates = [d.date.date() for d in data]  # Converts datetime to date
         if graph_type == 'sleep':
             values = [d.sleep_hours for d in data if d.sleep_hours is not None]
             title = 'Sleep Log - Today' if timeframe == 'daily' else f'Sleep Log ({timeframe.capitalize()} View)'
@@ -368,7 +370,7 @@ def update_habit_graph():
         if not values:
             return jsonify({'success': False, 'error': 'No data available for today'})
 
-        # Create the plot
+        # Creates the plot
         plt.figure(figsize=(10, 5))
         if timeframe == 'daily':
             plt.bar(['Today'], values[-1], color=color, alpha=0.7)
@@ -386,13 +388,13 @@ def update_habit_graph():
         plt.ylabel(ylabel)
         plt.grid(True)
 
-        # Save plot to bytes buffer
+        # Saves plot to bytes buffer
         buf = io.BytesIO()
         plt.savefig(buf, format='png', bbox_inches='tight')
         buf.seek(0)
         plt.close()
 
-        # Convert to base64
+        # Converts to base64
         graph_base64 = base64.b64encode(buf.getvalue()).decode()
         
         return jsonify({
@@ -410,7 +412,7 @@ def update_fitness_graph():
     graph_type = request.args.get('type')
     timeframe = request.args.get('timeframe')
     
-    # Get data with proper date filtering
+    # Gets data with proper date filtering
     end_date = datetime.now()
     if timeframe == 'daily':
         start_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -428,7 +430,7 @@ def update_fitness_graph():
     ).order_by(HealthData.date.asc()).all()
 
     try:
-        dates = [d.date.date() for d in data]  # Convert datetime to date
+        dates = [d.date.date() for d in data]  # Converts datetime to date
         if graph_type == 'steps':
             values = [d.steps for d in data if d.steps is not None]
             title = 'Step Tracker - Today' if timeframe == 'daily' else f'Step Tracker ({timeframe.capitalize()} View)'
@@ -455,7 +457,7 @@ def update_fitness_graph():
             plt.plot(dates, values, color=color, marker=marker, linestyle='-')
             plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
             plt.xticks(rotation=45)
-            # Set x-axis limits and add padding
+            # Sets x-axis limits and add padding
             plt.xlim(start_date.replace(hour=0), end_date.replace(hour=23, minute=59, second=59))
             plt.margins(x=0.02)
 
@@ -486,7 +488,7 @@ def update_nutrition_graph():
     graph_type = request.args.get('type')
     timeframe = request.args.get('timeframe')
     
-    # Get data with proper date filtering
+    # Gets data with proper date filtering
     end_date = datetime.now()
     if timeframe == 'daily':
         start_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)

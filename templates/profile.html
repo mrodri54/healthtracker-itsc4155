@@ -14,6 +14,13 @@
         <input type="password" id="password" name="password" placeholder="Leave blank to keep current password">
     </div>
     <button type="submit">Update Profile</button>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 </form>
 
 <p><strong>Current Username:</strong> {{ user.username }}</p>

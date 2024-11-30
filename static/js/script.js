@@ -145,4 +145,4 @@
         listItem.textContent = text;
         document.getElementById(logId).appendChild(listItem);
     }
-});
+
