@@ -61,6 +61,47 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+            // Apply Saved Theme on Load
+            if (localStorage.getItem('theme') === 'dark') {
+                enableDarkMode();
+            }
+
+            // Toggle Dark Mode
+            darkModeToggle.addEventListener('click', function() {
+                if (document.body.classList.contains('dark-mode')) {
+                    disableDarkMode();
+                } else {
+                    enableDarkMode();
+                }
+            });
+
+            function enableDarkMode() {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.textContent = 'Light Mode';
+                document.querySelectorAll('.nav-item, .nav-button').forEach(item => {
+                    item.classList.add('dark-mode');
+                });
+                localStorage.setItem('theme', 'dark');
+            }
+
+            function disableDarkMode() {
+                document.body.classList.remove('dark-mode');
+                darkModeToggle.textContent = 'Dark Mode';
+                document.querySelectorAll('.nav-item, .nav-button').forEach(item => {
+                    item.classList.remove('dark-mode');
+                });
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+
     {% block scripts %}{% endblock %}
 </body>
 </html>
