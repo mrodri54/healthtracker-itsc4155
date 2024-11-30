@@ -104,6 +104,14 @@
     color: #333;
 } */
 
+/* Colors:
+   - Light gray: #c0c0c0
+   - UNCC green: #00471e
+   - Gold: #baa749
+   - Brown: #483d3f
+   - Light brown: #65524D
+*/
+
 body {
     font-family: 'Verdana', sans-serif;
     background-color: #c0c0c0;
@@ -123,9 +131,6 @@ body {
 .navbar {
     padding: 1% 0;
     background-color: #00471e;
-    /* display: flex;
-    align-items: center;
-    justify-content: space-between; */
 }
 .nav-links {
     display: flex;
@@ -146,6 +151,7 @@ body {
     font-size: 1.2vw;
     text-decoration: none;
     transition: all 0.3s ease;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
 
 /* Hover effect for nav items and buttons */
@@ -153,6 +159,7 @@ body {
     background-color: #483d3f;
     color: #baa749;
     text-decoration: none;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* Slightly deeper shadow on hover */
 }
 
 .tracker-section {
@@ -185,10 +192,12 @@ body.dark-mode {
     background-color: #483d3f;
     color: #baa749;
     border-color: #483d3f;
+    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1); /* Softer shadow in dark mode */
 }
 .nav-item.dark-mode:hover, .nav-button.dark-mode:hover {
     background-color: #baa749;
     color: #483d3f;
+    box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.2); /* Enhanced shadow on hover in dark mode */
 }
 
 /* Grid Container for Fitness Guide */
@@ -212,7 +221,3 @@ body.dark-mode {
 .fitness-section h4, .fitness-section p, .fitness-section ul {
     color: #333;
 }
-
-
-
-
