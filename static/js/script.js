@@ -1,32 +1,57 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    if (localStorage.getItem('theme') === 'dark') {
-        enableDarkMode();
-    }
-    darkModeToggle.addEventListener('click', toggleDarkMode);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dark Mode Toggle Button
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-    function enableDarkMode() {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.textContent = 'Light Mode';
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.add('dark-mode'));
-    }
-
-    function disableDarkMode() {
-        document.body.classList.remove('dark-mode');
-        darkModeToggle.textContent = 'Dark Mode';
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('dark-mode'));
-    }
-
-    function toggleDarkMode() {
-        if (document.body.classList.contains('dark-mode')) {
-            disableDarkMode();
-            localStorage.setItem('theme', 'light');
-        } else {
+        // Check and Apply Saved Theme on Load
+        if (localStorage.getItem('theme') === 'dark') {
             enableDarkMode();
+        }
+
+        // Toggle Dark Mode on Button Click
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+        }
+
+        function enableDarkMode() {
+            // Add dark-mode class to body
+            document.body.classList.add('dark-mode');
+            // Update button text
+            if (darkModeToggle) {
+                darkModeToggle.textContent = 'Light Mode';
+            }
+            // Add dark-mode class to all .nav-item elements
+            document.querySelectorAll('.nav-item, .nav-button').forEach(item => {
+                item.classList.add('dark-mode');
+            });
+            // Save theme in localStorage
             localStorage.setItem('theme', 'dark');
         }
-    }
+
+        function disableDarkMode() {
+            // Remove dark-mode class from body
+            document.body.classList.remove('dark-mode');
+            // Update button text
+            if (darkModeToggle) {
+                darkModeToggle.textContent = 'Dark Mode';
+            }
+            // Remove dark-mode class from all .nav-item elements
+            document.querySelectorAll('.nav-item, .nav-button').forEach(item => {
+                item.classList.remove('dark-mode');
+            });
+            // Save theme in localStorage
+            localStorage.setItem('theme', 'light');
+        }
+
+        function toggleDarkMode() {
+            // Toggle between enable and disable
+            if (document.body.classList.contains('dark-mode')) {
+                disableDarkMode();
+            } else {
+                enableDarkMode();
+            }
+        }
+    });
+
 
     // Calorie Tracker
     const calorieInput = document.getElementById('calorie-input');
