@@ -112,56 +112,73 @@
    - Light brown: #65524D
 */
 
+/* Body Styling */
 body {
     font-family: 'Verdana', sans-serif;
     background-color: #c0c0c0;
     color: #333333;
     transition: background-color 0.3s ease;
 }
+
+/* Header Styling */
 .header {
     background-color: #00471e; 
     padding: 2%;
     text-align: center;
 }
+
+/* Page Title */
 .title {
     color: #c0c0c0;
     font-size: 2.5vw;
     font-weight: bold;
 }
+
+/* Navbar Styling */
 .navbar {
-    padding: 1% 0;
+    display: flex; /* Flexbox for alignment */
+    justify-content: space-between; /* Space between left and right sections */
+    align-items: center; /* Vertically center elements */
     background-color: #00471e;
-}
-.nav-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1%;
+    padding: 10px 20px; /* Adjust padding for better spacing */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow for navbar */
 }
 
-/* Unified styles for .nav-item and .nav-button */
+/* Navigation Links Container (Left-Aligned Buttons) */
+.nav-links {
+    display: flex; /* Flexbox to make items inline */
+    gap: 10px; /* Space between buttons */
+}
+
+/* Right-Aligned Buttons */
+.nav-right {
+    display: flex;
+    gap: 10px; /* Space between right-aligned buttons */
+}
+
+/* Unified Styles for Buttons */
 .nav-item, .nav-button {
-    margin: 0.5% 1%;
-    padding: 1% 2%;
+    padding: 8px 16px; /* Adjust padding for a balanced look */
     background-color: #baa749;
     color: #483d3f;
     border: 2px solid #baa749;
-    border-radius: 4%; /* Subtle rounding */
-    text-align: center;
-    font-size: 1.2vw;
+    border-radius: 6px; /* Slightly rounder corners */
+    font-size: 1rem; /* Adjust font size for better readability */
     text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    text-align: center;
+    transition: all 0.3s ease; /* Smooth hover animation */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    cursor: pointer; /* Change cursor to pointer for buttons */
 }
 
-/* Hover effect for nav items and buttons */
+/* Hover Effect for Buttons */
 .nav-item:hover, .nav-button:hover {
     background-color: #483d3f;
     color: #baa749;
-    text-decoration: none;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* Slightly deeper shadow on hover */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
 }
 
+/* Tracker Section Styling */
 .tracker-section {
     background-color: #c0c0c0;
     border-radius: 2%;
@@ -173,31 +190,9 @@ body {
     margin-top: 10%;
 }
 
+/* Input Section Spacing */
 .data_input {
     margin-top: 2%;
-}
-
-/* Dark Mode Styles */
-body.dark-mode {
-    background-color: #3a3a3a;
-    color: #d4d4d4;
-}
-.header.dark-mode {
-    background-color: #2a2a2a;
-}
-.navbar.dark-mode {
-    background-color: #2a2a2a;
-}
-.nav-item.dark-mode, .nav-button.dark-mode {
-    background-color: #483d3f;
-    color: #baa749;
-    border-color: #483d3f;
-    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1); /* Softer shadow in dark mode */
-}
-.nav-item.dark-mode:hover, .nav-button.dark-mode:hover {
-    background-color: #baa749;
-    color: #483d3f;
-    box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.2); /* Enhanced shadow on hover in dark mode */
 }
 
 /* Grid Container for Fitness Guide */
@@ -207,6 +202,8 @@ body.dark-mode {
     gap: 20px;
     margin-top: 20px;
 }
+
+/* Fitness Section Styling */
 .fitness-section {
     background-color: #f4f4f4;
     border: 1px solid #ddd;
@@ -214,10 +211,39 @@ body.dark-mode {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .fitness-section h3 {
     color: #00471e;
     font-size: 1.5rem;
 }
+
 .fitness-section h4, .fitness-section p, .fitness-section ul {
     color: #333;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #3a3a3a;
+    color: #d4d4d4;
+}
+
+.header.dark-mode {
+    background-color: #2a2a2a;
+}
+
+.navbar.dark-mode {
+    background-color: #2a2a2a;
+}
+
+/* Dark Mode-Specific Buttons */
+.nav-item.dark-mode, .nav-button.dark-mode {
+    background-color: #483d3f;
+    color: #baa749;
+    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1); /* Softer shadow in dark mode */
+}
+
+.nav-item.dark-mode:hover, .nav-button.dark-mode:hover {
+    background-color: #baa749;
+    color: #483d3f;
+    box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.2); /* Enhanced hover shadow in dark mode */
 }
