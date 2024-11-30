@@ -147,7 +147,7 @@ def add_health_data():
 def habit_tracking():
     # Fetch the health data for the logged-in user
     user = current_user
-    health_data = HealthData.query.filter_by(user_id=user.id).all()
+    health_data = HealthData.query.filter_by(user_id=user.id).order_by(HealthData.date.asc()).all()
 
     # Extract dates, sleep hours, and screen time data
     dates = [data.date.strftime('%Y-%m-%d') for data in health_data]
@@ -197,41 +197,41 @@ def habit_tracking():
 @app.route('/nutrition')
 @login_required  # Ensure the user is logged in
 def nutrition_tracking():
-    # Get the current user from Flask-Login
     user = current_user
+    # Get the last 30 days of data by default
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=30)
     
-    # Query the HealthData model to get the calories intake for this user
-    health_data = HealthData.query.filter_by(user_id=user.id).all()
-    
-    # Extract dates and calories data
-    dates = [data.date.strftime('%Y-%m-%d') for data in health_data]
-    calories = [data.calories_intake for data in health_data]
+    health_data = HealthData.query.filter(
+        HealthData.user_id == user.id,
+        HealthData.date.between(start_date, end_date)
+    ).order_by(HealthData.date.asc()).all()  # Order by ascending date
 
-    # If no data is found, return an empty plot
     if not health_data:
-        return render_template('nutrition.html', img_base64=None, message="No data available for this user.")
+        return render_template('nutrition.html', message="No data available.")
 
-    # Create the bar plot
-    fig, ax = plt.subplots()
-    ax.bar(dates, calories, color='skyblue')
-
-    # Add labels and title
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Calories Consumed')
-    ax.set_title(f'Calories Intake for {user.username}')
-
-    # Rotate date labels for better readability
+    # Create the plot
+    plt.figure(figsize=(10, 5))
+    dates = [d.date for d in health_data]
+    calories = [d.calories_intake for d in health_data if d.calories_intake is not None]
+    
+    plt.bar(dates, calories, color='skyblue', alpha=0.7)
+    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
     plt.xticks(rotation=45)
+    plt.xlim(start_date, end_date)
+    plt.margins(x=0.02)
+    plt.title(f'Calories Intake Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Calories Consumed')
+    plt.grid(True)
 
-    # Save the plot to a BytesIO object
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
+    # Save plot to bytes buffer
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
+    plt.close()
 
-    # Encode the image in base64 to display it in the HTML
-    img_base64 = base64.b64encode(img.getvalue()).decode('utf-8')
-
-    # Pass the base64 encoded image and any other necessary data to the template
+    img_base64 = base64.b64encode(buf.getvalue()).decode()
     return render_template('nutrition.html', img_base64=img_base64)
 
 
@@ -242,7 +242,7 @@ def fitness_tracking():
     user = current_user
 
     # Query the HealthData model to get the steps and workout performance data for this user
-    health_data = HealthData.query.filter_by(user_id=user.id).all()
+    health_data = HealthData.query.filter_by(user_id=user.id).order_by(HealthData.date.asc()).all()
 
     # Extract dates, steps, and workouts data
     dates = [data.date.strftime('%Y-%m-%d') for data in health_data]
@@ -333,23 +333,23 @@ def update_habit_graph():
     # Get data with proper date filtering
     end_date = datetime.now()
     if timeframe == 'daily':
-        # Set start_date to the beginning of today (midnight)
         start_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        # Set end_date to the end of today
         end_date = start_date + timedelta(days=1)
     elif timeframe == 'weekly':
         start_date = end_date - timedelta(weeks=1)
+        end_date = end_date.replace(hour=23, minute=59, second=59)
     else:  # monthly
         start_date = end_date - timedelta(days=30)
+        end_date = end_date.replace(hour=23, minute=59, second=59)
 
     data = HealthData.query.filter(
         HealthData.user_id == current_user.id,
         HealthData.date.between(start_date, end_date)
-    ).order_by(HealthData.date).all()
+    ).order_by(HealthData.date.asc()).all()
 
     try:
         # Query data based on graph type
-        dates = [d.date for d in data]
+        dates = [d.date.date() for d in data]  # Convert datetime to date
         if graph_type == 'sleep':
             values = [d.sleep_hours for d in data if d.sleep_hours is not None]
             title = 'Sleep Log - Today' if timeframe == 'daily' else f'Sleep Log ({timeframe.capitalize()} View)'
@@ -371,17 +371,18 @@ def update_habit_graph():
         # Create the plot
         plt.figure(figsize=(10, 5))
         if timeframe == 'daily':
-            # For daily view, use a single bar
-            plt.bar(['Today'], values[-1], color=color, alpha=0.7)  # Just show the latest value
-            plt.ylim(0, max(values[-1] * 1.2, 1))  # Set y-axis limit with some padding
+            plt.bar(['Today'], values[-1], color=color, alpha=0.7)
+            plt.ylim(0, max(values[-1] * 1.2, 1))
         else:
             plt.plot(dates, values, color=color, marker=marker, linestyle='-')
             plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
             plt.xticks(rotation=45)
+            # Set x-axis limits and add padding
+            plt.xlim(start_date.replace(hour=0), end_date.replace(hour=23, minute=59, second=59))
+            plt.margins(x=0.02)
 
-        # Add labels and title
         plt.title(title)
-        plt.xlabel('Date' if timeframe != 'daily' else 'Time')
+        plt.xlabel('Date' if timeframe != 'daily' else '')
         plt.ylabel(ylabel)
         plt.grid(True)
 
@@ -416,16 +417,18 @@ def update_fitness_graph():
         end_date = start_date + timedelta(days=1)
     elif timeframe == 'weekly':
         start_date = end_date - timedelta(weeks=1)
+        end_date = end_date.replace(hour=23, minute=59, second=59)
     else:  # monthly
         start_date = end_date - timedelta(days=30)
+        end_date = end_date.replace(hour=23, minute=59, second=59)
 
     data = HealthData.query.filter(
         HealthData.user_id == current_user.id,
         HealthData.date.between(start_date, end_date)
-    ).order_by(HealthData.date).all()
+    ).order_by(HealthData.date.asc()).all()
 
     try:
-        dates = [d.date for d in data]
+        dates = [d.date.date() for d in data]  # Convert datetime to date
         if graph_type == 'steps':
             values = [d.steps for d in data if d.steps is not None]
             title = 'Step Tracker - Today' if timeframe == 'daily' else f'Step Tracker ({timeframe.capitalize()} View)'
@@ -452,6 +455,9 @@ def update_fitness_graph():
             plt.plot(dates, values, color=color, marker=marker, linestyle='-')
             plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
             plt.xticks(rotation=45)
+            # Set x-axis limits and add padding
+            plt.xlim(start_date.replace(hour=0), end_date.replace(hour=23, minute=59, second=59))
+            plt.margins(x=0.02)
 
         plt.title(title)
         plt.xlabel('Date' if timeframe != 'daily' else '')
@@ -487,16 +493,18 @@ def update_nutrition_graph():
         end_date = start_date + timedelta(days=1)
     elif timeframe == 'weekly':
         start_date = end_date - timedelta(weeks=1)
+        end_date = end_date.replace(hour=23, minute=59, second=59)
     else:  # monthly
         start_date = end_date - timedelta(days=30)
+        end_date = end_date.replace(hour=23, minute=59, second=59)
 
     data = HealthData.query.filter(
         HealthData.user_id == current_user.id,
         HealthData.date.between(start_date, end_date)
-    ).order_by(HealthData.date).all()
+    ).order_by(HealthData.date.asc()).all()
 
     try:
-        dates = [d.date for d in data]
+        dates = [d.date.date() for d in data]  # Convert datetime to date
         values = [d.calories_intake for d in data if d.calories_intake is not None]
         title = 'Calories Intake - Today' if timeframe == 'daily' else f'Calories Intake ({timeframe.capitalize()} View)'
         ylabel = 'Calories Consumed'
@@ -510,9 +518,12 @@ def update_nutrition_graph():
             plt.bar(['Today'], values[-1], color=color, alpha=0.7)
             plt.ylim(0, max(values[-1] * 1.2, 1))
         else:
-            plt.bar(dates, values, color=color, alpha=0.7)
+            plt.bar(dates, values, color=color, alpha=0.7, width=0.8)
             plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
             plt.xticks(rotation=45)
+            plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.DayLocator())
+            plt.xlim(start_date.replace(hour=0), end_date.replace(hour=23, minute=59, second=59))
+            plt.margins(x=0.02)
 
         plt.title(title)
         plt.xlabel('Date' if timeframe != 'daily' else '')
