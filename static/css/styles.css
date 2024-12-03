@@ -22,46 +22,49 @@ body {
 
 /* Navbar Styling */
 .navbar {
-    display: flex; /* Flexbox for alignment */
-    justify-content: space-between; /* Space between left and right sections */
-    align-items: center; /* Vertically center elements */
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
     background-color: #00471e;
-    padding: 10px 20px; /* Adjust padding for better spacing */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow for navbar */
+    padding: 10px 20px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
 }
 
 /* Navigation Links Container (Left-Aligned Buttons) */
 .nav-links {
-    display: flex; /* Flexbox to make items inline */
-    gap: 10px; /* Space between buttons */
+    display: flex; 
+    gap: 5px; /* Space between buttons */
+    margin-left: -15px;
 }
 
 /* Right-Aligned Buttons */
 .nav-right {
     display: flex;
-    gap: 10px; /* Space between right-aligned buttons */
+    gap: 5px; /* Space between buttons */
+    margin-left: 5px;
 }
 
-/* Unified Styles for Buttons */
+/*Styles for both types of nav Buttons */
 .nav-item, .nav-button {
-    padding: 4px 8px; /* Adjust padding for a balanced look */
+    padding: 1px 3px; 
     background-color: #baa749;
     color: #483d3f;
+    margin-top: 5px;
     border: 2px solid #baa749;
-    border-radius: 6px; /* Slightly rounder corners */
-    font-size: 1rem; /* Adjust font size for better readability */
+    border-radius: 6px;
+    font-size: .7rem; 
     text-decoration: none;
     text-align: center;
-    transition: all 0.3s ease; /* Smooth hover animation */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-    cursor: pointer; /* Change cursor to pointer for buttons */
+    transition: all 0.3s ease; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+    cursor: pointer; 
 }
 
 /* Hover Effect for Buttons */
 .nav-item:hover, .nav-button:hover {
     background-color: #483d3f;
     color: #baa749;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); 
 }
 
 /* Tracker Section Styling */
@@ -125,56 +128,64 @@ body.dark-mode {
 .nav-item.dark-mode, .nav-button.dark-mode {
     background-color: #483d3f;
     color: #baa749;
-    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1); /* Softer shadow in dark mode */
+    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1); 
 }
 
 .nav-item.dark-mode:hover, .nav-button.dark-mode:hover {
     background-color: #baa749;
     color: #483d3f;
-    box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.2); /* Enhanced hover shadow in dark mode */
+    box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.2); 
 }
 
 
+/* Hide the menu by default on smaller screens */
+.nav-menu {
+    display: none; /* Hidden by default */
+    flex-direction: row;
+    background-color: #00471e;
+    padding: 4px 4px;
+    border-radius: 5px;
+}
 
-/* Smartphone Portrait (up to 480px) */
-@media (max-width: 480px) {
+/* Shows the menu when expanded */
+.nav-menu.show {
+    display: flex;
+}
 
+/* Adjust toggle button for phones */
+.navbar-toggler {
+    background-color: #baa749;
+    color: #483d3f;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Hide toggle button on larger screens */
+@media (min-width: 768px) {
+    .navbar-toggler {
+        display: none;
+    }
     .nav-item, .nav-button {
-        font-size: 0.8rem;
-        padding: 2px 5px;
+        font-size: 1.2rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 10px; /* Space between buttons */
+    }
+
+    .nav-right {
+        display: flex;
+        gap: 10px; /* Space between right-aligned buttons */
+        margin-left: 100px;
+    }
+
+    .nav-menu {
+        display: flex; 
+        flex-direction: row; 
+        background-color: transparent;
+        padding: 0;
     }
 }
 
-/* Smartphone Landscape (up to 768px) */
-@media (max-width: 768px) {
-
-    .nav-item, .nav-button {
-        font-size: 0.9rem;
-        padding: 3px 6px;
-    }
-}
-
-/* Tablet (up to 1024px) */
-@media (max-width: 1024px) {
-    .nav-item, .nav-button {
-        font-size: 1rem;
-        padding: 4px 8px;
-    }
-}
-
-/* Foldable Phones (up to 600px) */
-@media (max-width: 600px) {
-    .nav-item, .nav-button {
-        font-size: 0.85rem;
-        padding: 3px 6px;
-    }
-}
-
-/* Larger Foldable Devices (up to 800px) */
-@media (max-width: 800px) {
-
-    .nav-item, .nav-button {
-        font-size: 0.95rem;
-        padding: 3px 7px;
-    }
-}

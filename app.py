@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI plotting
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
 import base64

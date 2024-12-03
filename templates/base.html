@@ -12,12 +12,11 @@
 
 </head>
 <body>
-    <nav class="navbar">
+    <!-- <nav class="navbar">
         <div class="container">
             <a href="{{ url_for('home') }}">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo" style="height: 50px;">
             </a>
-              <!-- Left-Aligned Buttons -->
               <div class="nav-links">
                 <a class="nav-item" href="{{ url_for('habit_tracking') }}">Habit Tracking</a>
                 <a class="nav-item" href="{{ url_for('nutrition_tracking') }}">Nutrition Tracking</a>
@@ -25,7 +24,6 @@
                 <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
             </div>
             
-            <!-- Right-Aligned Buttons -->
             <div class="nav-right">
                 {% if current_user.is_authenticated %}
                     <a class="nav-button" href="{{ url_for('profile') }}">Profile</a>
@@ -37,7 +35,43 @@
                 <button id="dark-mode-toggle" class="nav-button">Dark Mode</button>
             </div>
         </div>
+    </nav> -->
+    <nav class="navbar">
+        <div class="container">
+            <!-- Logo -->
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo" style="height: 50px;">
+            </a>
+            
+            <!-- Dropdown menu Toggle -->
+            <button class="navbar-toggler" type="button" id="navbarToggle" aria-expanded="false">
+                ☰
+            </button>
+    
+            <!-- nav Links -->
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-links">
+                    <a class="nav-item" href="{{ url_for('habit_tracking') }}">Habit Tracking</a>
+                    <a class="nav-item" href="{{ url_for('nutrition_tracking') }}">Nutrition Tracking</a>
+                    <a class="nav-item" href="{{ url_for('fitness_tracking') }}">Fitness Tracking</a>
+                    <a class="nav-item" href="{{ url_for('fitness_guide') }}">Fitness Guide</a>
+                </div>
+                
+                <!-- Right-Aligned Buttons -->
+                <div class="nav-right">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-button" href="{{ url_for('profile') }}">Profile</a>
+                        <button class="nav-button" onclick="window.location.href='/logout'">Logout</button>
+                    {% else %}
+                        <a class="nav-button" href="{{ url_for('userlogin') }}">Login</a>
+                        <a class="nav-button" href="{{ url_for('signup') }}">Sign Up</a>
+                    {% endif %}
+                    <button id="dark-mode-toggle" class="nav-button">Dark Mode</button>
+                </div>
+            </div>
+        </div>
     </nav>
+    
 
     <!-- Main Content -->
     <div class="container mt-4">

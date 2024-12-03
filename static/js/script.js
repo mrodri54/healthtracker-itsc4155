@@ -142,3 +142,15 @@ function addToLog(logId, text) {
     listItem.textContent = text;
     document.getElementById(logId).appendChild(listItem);
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const navbarToggle = document.getElementById("navbarToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    navbarToggle.addEventListener("click", () => {
+        const isExpanded = navbarToggle.getAttribute("aria-expanded") === "true";
+        navbarToggle.setAttribute("aria-expanded", !isExpanded);
+        navMenu.classList.toggle("show");
+    });
+});
